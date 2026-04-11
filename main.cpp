@@ -44,7 +44,7 @@ int main(){
     char buffer[4096];
         while ((readBytes = recv(newsockfd, buffer, sizeof(buffer), 0)) > 0){
             if (fwrite(buffer, 1, readBytes, fp) != readBytes){
-                //handleErrors();
+                cout<<"error leyendo";
                 break;
             }
         }
