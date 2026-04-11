@@ -18,14 +18,12 @@ void error(const char *msg){
 int main(){
     int sockfd, newsockfd;
     socklen_t clilen;
-    char buffer[256];
     struct sockaddr_in serv_addr, cli_addr;
     int n;
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
         error("ERROR opening socket");
     bzero((char *)&serv_addr, sizeof(serv_addr));
-    
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(3000);
@@ -36,7 +34,7 @@ int main(){
     newsockfd = accept(sockfd,(struct sockaddr *)&cli_addr,&clilen);
     if (newsockfd < 0)
         error("ERROR on accept");
-    bzero(buffer, 256);
+   // bzero(buffer, 256);
     // n = read(newsockfd, buffer, 255);
     // if (n < 0)
     //     error("ERROR reading from socket");
@@ -44,13 +42,13 @@ int main(){
     if (FILE *fp = fopen("filename.txt", "wb")){
     size_t readBytes;
     char buffer[4096];
-    while ((readBytes = recv(sockfd, buffer, sizeof(buffer), 0)) > 0){
-        if (fwrite(buffer, 1, readBytes, fp) != readBytes){
-            //handleErrors();
-            break;
+        while ((readBytes = recv(newsockfd, buffer, sizeof(buffer), 0)) > 0){
+            if (fwrite(buffer, 1, readBytes, fp) != readBytes){
+                //handleErrors();
+                break;
+            }
         }
     }
-}
     // n = write(newsockfd, "I got your message", 18);
     // if (n < 0)
     //     error("ERROR writing to socket");
