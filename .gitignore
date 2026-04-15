@@ -80,4 +80,8 @@ CMakeLists.txt.user*
 .rcc/
 .uic/
 /build*/
-.out
+*.out
+*.jpeg
+*.png
+*.webp
+*.jpg
