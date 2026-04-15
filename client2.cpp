@@ -3,10 +3,21 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <fstream>
+
+// Source - https://stackoverflow.com/a/32286531
+// Posted by bames53, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-04-15, License - CC BY-SA 4.0
+
+#include <filesystem>
+
+uintmax_t getFileSize(const char* filename) {
+    return std::filesystem::file_size(filename);
+}
+
 
 int main() {
-    std::cout<<"client"<<std::endl;
-    std::cout<<"client"<<std::endl;
+    std::cout << "client started" << std::endl;
     // creating socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     // specifying address
@@ -17,9 +28,20 @@ int main() {
     // sending connection request
     connect(clientSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     // sending data
-    long message = 134345345;
-    send(clientSocket, &message, sizeof(message), 0);
-    // closing socket
-    close(clientSocket);
+    std::ifstream::pos_type fileSize = getFileSize("/home/imaxii/qt-workspace/sktServer/image.png");
+    std::cout<<fileSize<<std::endl;
+    send(clientSocket, &fileSize, sizeof(fileSize), 0);
+    if (FILE *fp = fopen("image.png", "rb")) {
+        size_t readBytes;
+        char buffer[4096];
+        while ((readBytes = fread(buffer, 1, sizeof(buffer), fp)) > 0) {
+            if (send(clientSocket, buffer, readBytes, 0) != readBytes) {
+                //handleErrors();
+                break;
+            }
+        }
+        // closing socket
+        close(clientSocket);
+    }
     return 0;
 }

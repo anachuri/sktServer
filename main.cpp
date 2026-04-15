@@ -13,7 +13,7 @@ void error(const char *msg) {
 }
 
 int main() {
-    std::cout<<"server"<<std::endl;
+    std::cout<<"server started"<<std::endl;
     int serverSocket;
     struct sockaddr_in serv_addr, cli_addr;
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -34,11 +34,10 @@ int main() {
     if (recv(clientSocket, &fileSize, sizeof(long), 0) < 0)
         error("cannot read file size");
     std::cout << fileSize << std::endl;
-    if (FILE *fp = fopen("image.jpeg", "wb")) {
+    if (FILE *fp = fopen("image-received.png", "wb")) {
         size_t readBytes;
         char buffer[4096];
-        std::cout << "entrando" << std::endl;
-        while ((readBytes = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0) {
+        while ((readBytes = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0 && fileSize>0) {
             if (fwrite(buffer, 1, readBytes, fp) != readBytes) {
                 std::cout << "error leyendo";
                 break;
@@ -46,6 +45,8 @@ int main() {
             fileSize -= readBytes;
             std::cout << "Received " << readBytes << " bytes" << std::endl;
         }
+        if(fileSize>0)
+            error("error al recibir el archivo,archivo incompleto");
         std::cout << "File transfer complete." << std::endl;
         fclose(fp);
     }
