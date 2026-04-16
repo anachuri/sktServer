@@ -28,18 +28,20 @@ int main() {
     // sending connection request
     connect(clientSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     // sending data
-    std::ifstream::pos_type fileSize = getFileSize("/home/imaxii/qt-workspace/sktServer/image.png");
-    std::cout<<fileSize<<std::endl;
-    send(clientSocket, &fileSize, sizeof(fileSize), 0);
-    if (FILE *fp = fopen("image.png", "rb")) {
+    uintmax_t fileSize = getFileSize("/home/imaxii/qt-workspace/sktServer/image.png");
+    std::cout << fileSize << std::endl;
+    send(clientSocket, &fileSize, sizeof(uintmax_t), 0);
+    if (FILE *fp = fopen("/home/imaxii/qt-workspace/sktServer/image.png", "rb")) {
         size_t readBytes;
         char buffer[4096];
         while ((readBytes = fread(buffer, 1, sizeof(buffer), fp)) > 0) {
             if (send(clientSocket, buffer, readBytes, 0) != readBytes) {
+                std::cout << "error" << std::endl;
                 //handleErrors();
                 break;
             }
         }
+        fclose(fp);
         // closing socket
         close(clientSocket);
     }

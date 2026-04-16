@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -30,22 +31,23 @@ int main() {
     int clientSocket = accept(serverSocket, (struct sockaddr *) &cli_addr, &clilen);
     if (clientSocket < 0)
         error("ERROR on accept");
-    long fileSize;
+    std::ifstream::pos_type fileSize;
     if (recv(clientSocket, &fileSize, sizeof(long), 0) < 0)
         error("cannot read file size");
     std::cout << fileSize << std::endl;
-    if (FILE *fp = fopen("image-received.png", "wb")) {
+    if (FILE *fp = fopen("/home/imaxii/qt-workspace/sktServer/received.png", "wb")) {
         size_t readBytes;
         char buffer[4096];
-        while ((readBytes = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0 && fileSize>0) {
+        while ((readBytes = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0 && fileSize > 0) {
             if (fwrite(buffer, 1, readBytes, fp) != readBytes) {
                 std::cout << "error leyendo";
                 break;
             }
             fileSize -= readBytes;
             std::cout << "Received " << readBytes << " bytes" << std::endl;
+            std::cout << "file size subtracted " << fileSize << std::endl;
         }
-        if(fileSize>0)
+        if (fileSize > 0)
             error("error al recibir el archivo,archivo incompleto");
         std::cout << "File transfer complete." << std::endl;
         fclose(fp);
