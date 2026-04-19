@@ -3,7 +3,6 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <fstream>
 
 // Source - https://stackoverflow.com/a/32286531
 // Posted by bames53, modified by community. See post 'Timeline' for change history
@@ -14,7 +13,6 @@
 uintmax_t getFileSize(const char* filename) {
     return std::filesystem::file_size(filename);
 }
-
 
 int main() {
     std::cout << "client started" << std::endl;
@@ -31,8 +29,8 @@ int main() {
     uintmax_t fileSize = getFileSize("/home/imaxii/qt-workspace/sktServer/image.png");
     std::cout << fileSize << std::endl;
     send(clientSocket, &fileSize, sizeof(uintmax_t), 0);
-
-
+    send(clientSocket, "file1.png", sizeof("file1.png"), 0);
+    std::cout << sizeof("file1.png") << std::endl;
     if (FILE *fp = fopen("/home/imaxii/qt-workspace/sktServer/image.png", "rb")) {
         size_t readBytes;
         char buffer[4096];
