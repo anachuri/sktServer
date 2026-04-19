@@ -35,6 +35,10 @@ int main() {
     if (recv(clientSocket, &fileSize, sizeof(long), 0) < 0)
         error("cannot read file size");
     std::cout << fileSize << std::endl;
+    char fileName[256];
+    if(recv(clientSocket, &fileName, sizeof(char*), 0) < 0)
+        error("cannot read file name");
+    std::cout << fileName << std::endl;
     if (FILE *fp = fopen("/home/imaxii/qt-workspace/sktServer/received.png", "wb")) {
         size_t readBytes;
         char buffer[4096];
