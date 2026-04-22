@@ -85,3 +85,9 @@ CMakeLists.txt.user*
 *.png
 *.webp
 *.jpg
+*.pdf
+*.docx
+*.xlsx
+*.mp3
+*.odp
+*.bat

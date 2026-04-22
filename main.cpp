@@ -65,26 +65,17 @@ int main() {
     std::cout << fileName << std::endl;
 
     struct passwd *pw = getpwuid(getuid());
-    char homeDir[256];
-    strcpy(homeDir, pw->pw_dir);
-    strcat(homeDir, "/stkFiles/");
-    std::cout << homeDir << std::endl;
+    char filePath[256];
+    strcpy(filePath, pw->pw_dir);
+    strcat(filePath, "/sktFiles/");
+    std::cout << filePath << std::endl;
     struct stat st = {0};
-    if (stat(homeDir, &st) == -1) {
-        if (mkdir(homeDir, 0777) == -1)
-            error("error al crear");
-        else {
-            strcat(homeDir, fileName);
-            readFileBytes(clientSocket, homeDir, fileSize);
-            close(clientSocket);
-            close(serverSocket);
-        }
-    } else {
-        strcat(homeDir, fileName);
-        readFileBytes(clientSocket, homeDir, fileSize);
-        close(clientSocket);
-        close(serverSocket);
-    }
-
+    mkdir(filePath, 0777);
+    if (stat(filePath, &st) == -1)
+        error("error al crear");
+    strcat(filePath, fileName);
+    readFileBytes(clientSocket, filePath, fileSize);
+    close(clientSocket);
+    close(serverSocket);
     return 0;
 }
