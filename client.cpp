@@ -27,7 +27,7 @@ int main() {
     // sending connection request
     connect(clientSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     // sending data
-    char filePath[200];
+    char filePath[256];
     strcpy(filePath, "/home/imaxii/qt-workspace/sktServer/");
     strcat(filePath, fileName);
     std::cout << filePath << std::endl;
@@ -38,7 +38,7 @@ int main() {
     std::cout << sizeof(fileName) << std::endl;
     if (FILE *fp = fopen(filePath, "rb")) {
         size_t readBytes;
-        char buffer[4096];
+        char buffer[8192];
         while ((readBytes = fread(buffer, 1, sizeof(buffer), fp)) > 0) {
             if (send(clientSocket, buffer, readBytes, 0) != readBytes) {
                 std::cout << "error" << std::endl;
