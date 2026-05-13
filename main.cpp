@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <pthread.h>
+#include <cstdint>
 
 void error(const char *msg) {
     perror(msg);
@@ -28,11 +30,12 @@ void readFileBytes(int clientSocket, const char fileName[256], uintmax_t &fileSi
             std::cout << "Received " << readBytes << " bytes" << std::endl;
             std::cout << "file size subtracted " << fileSize << std::endl;
         }
-        if (fileSize > 0)
-            error("error al recibir el archivo,archivo incompleto");
-        std::cout << "File transfer complete." << std::endl;
+        delete[]fileName;
         fclose(fp);
     }
+    if (fileSize > 0)
+        error("error al recibir el archivo,archivo incompleto");
+    std::cout << "File transfer complete." << std::endl;
 }
 
 char *buildFilePath(const char fileName[]) {
@@ -50,6 +53,28 @@ char *buildFilePath(const char fileName[]) {
     return filePath;
 }
 
+void* thread_proc(void *arg){
+    std::cout<<"ss"<<std::endl;
+    printf("child thread %i with pid %i created.\n", pthread_self(),
+           getpid());
+    int clientSocket = *((int*)(&arg));
+    std::cout<<clientSocket<<std::endl;
+    uintmax_t fileSize;
+    if (recv(clientSocket, &fileSize, sizeof(long), 0) < 0)
+        error("cannot read file size");
+    std::cout << fileSize << std::endl;
+    char fileName[256];
+    if (recv(clientSocket, &fileName, sizeof(fileName), 0) < 0)
+        error("cannot read file name");
+    std::cout << fileName << std::endl;
+    char *filePath = buildFilePath(fileName);
+    readFileBytes(clientSocket, filePath, fileSize);
+    close(clientSocket);
+    printf("child thread %i with pid %i finished.\n", pthread_self(),
+           getpid());
+    return nullptr;
+}
+
 int main() {
     std::cout << "server started" << std::endl;
     int serverSocket;
@@ -62,24 +87,17 @@ int main() {
     serv_addr.sin_port = htons(3000);
     if (bind(serverSocket, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
         error("ERROR on binding");
-    listen(serverSocket, 5);
+    if(listen(serverSocket, 5)<0)
+        error("Cannot listen on socket!");
     socklen_t clilen = sizeof(cli_addr);
     int clientSocket = accept(serverSocket, (struct sockaddr *) &cli_addr, &clilen);
     if (clientSocket < 0)
         error("ERROR on accept");
-
-    uintmax_t fileSize;
-    if (recv(clientSocket, &fileSize, sizeof(long), 0) < 0)
-        error("cannot read file size");
-    std::cout << fileSize << std::endl;
-
-    char fileName[256];
-    if (recv(clientSocket, &fileName, sizeof(fileName), 0) < 0)
-        error("cannot read file name");
-    std::cout << fileName << std::endl;
-    char *filePath = buildFilePath(fileName);
-    readFileBytes(clientSocket, filePath, fileSize);
-    close(clientSocket);
+    pthread_t threadId;
+    int result = pthread_create(&threadId, NULL, thread_proc, (void *) clientSocket);
+    if (result != 0)
+        error("Could not create thread");
+    pthread_join(threadId, NULL);
     close(serverSocket);
     return 0;
 }

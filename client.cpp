@@ -15,7 +15,7 @@ uintmax_t getFileSize(const char* filename) {
 }
 
 int main() {
-    char fileName[] = "mdiscretas.pdf";
+    char fileName[] = "zoom_amd64.deb";
     std::cout << "client started" << std::endl;
     // creating socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -41,7 +41,7 @@ int main() {
         char buffer[8192];
         while ((readBytes = fread(buffer, 1, sizeof(buffer), fp)) > 0) {
             if (send(clientSocket, buffer, readBytes, 0) != readBytes) {
-                std::cout << "error" << std::endl;
+                perror("");
                 //handleErrors();
                 break;
             }
