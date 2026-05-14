@@ -10,68 +10,66 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <cstdint>
 
 void error(const char *msg) {
     perror(msg);
     exit(1);
 }
 
-void readFileBytes(int clientSocket, const char fileName[256], uintmax_t &fileSize) {
-    if (FILE *fp = fopen(fileName, "wb")) {
+void readFileBytes(int clientSocket, const char filePath[256], uintmax_t fileSize) {
+    if (FILE *fp = fopen("/home/imaxii/sktFiles/image.png", "wb")) {
         size_t readBytes;
         char buffer[8192];
-        while ((readBytes = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0 && fileSize > 0) {
+        std::cout<<fileSize<<std::endl;
+        int s=0;
+        while ((readBytes = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0) {
             if (fwrite(buffer, 1, readBytes, fp) != readBytes) {
-                std::cout << "error leyendo";
+                std::cout << "error al escribir"<<std::endl;
                 break;
             }
+            s+=readBytes;
             fileSize -= readBytes;
-            std::cout << "Received " << readBytes << " bytes" << std::endl;
-            std::cout << "file size subtracted " << fileSize << std::endl;
+            //std::cout << "Received " << readBytes << " bytes" << std::endl;
+            //std::cout << "file size subtracted " << fileSize << std::endl;
         }
-        delete[]fileName;
         fclose(fp);
+        std::cout<<"bytes recibdos "<<s<<std::endl;
     }
-    if (fileSize > 0)
-        error("error al recibir el archivo,archivo incompleto");
-    std::cout << "File transfer complete." << std::endl;
+    if (fileSize > 0){
+        //error("error al recibir el archivo,archivo incompleto");
+        std::cout<<"error al recibir el archivo,archivo incompleto"<<std::endl;
+        close(clientSocket);
+    }else std::cout << "File transfer complete." << std::endl;
 }
 
-char *buildFilePath(const char fileName[]) {
+void buildFilePath(char *filePath, const char fileName[]) {
     struct passwd *pw = getpwuid(getuid());
-    char *filePath = new char[256];
     strncpy(filePath, pw->pw_dir, strlen(pw->pw_dir));
     filePath[strlen(pw->pw_dir)] = '\0';
-    strcat(filePath, "/sktFiles/");
-    std::cout << filePath << std::endl;
+    strncat(filePath, "/sktFiles/",strlen("/sktFiles/"));
+    std::cout<<"filePath: "<< filePath<< std::endl;
     struct stat st = {0};
     mkdir(filePath, 0777);
     if (stat(filePath, &st) == -1)
         error("error al crear");
-    strcat(filePath, fileName);
-    return filePath;
+    strncat(filePath, fileName,strlen(fileName));
+    std::cout<<"filePath: "<< filePath<< std::endl;
 }
 
-void* thread_proc(void *arg){
-    std::cout<<"ss"<<std::endl;
-    printf("child thread %i with pid %i created.\n", pthread_self(),
-           getpid());
+void *thread_proc(void *arg){
     int clientSocket = *((int*)(&arg));
-    std::cout<<clientSocket<<std::endl;
     uintmax_t fileSize;
-    if (recv(clientSocket, &fileSize, sizeof(long), 0) < 0)
-        error("cannot read file size");
-    std::cout << fileSize << std::endl;
+    //if (recv(clientSocket, &fileSize, sizeof(uintmax_t), 0) < 0)
+    //    error("cannot read file size");
+    //std::cout << fileSize << std::endl;
     char fileName[256];
-    if (recv(clientSocket, &fileName, sizeof(fileName), 0) < 0)
-        error("cannot read file name");
-    std::cout << fileName << std::endl;
-    char *filePath = buildFilePath(fileName);
+    //if (recv(clientSocket, &fileName, sizeof(fileName), 0) < 0)
+    //    error("cannot read file name");
+    //std::cout << fileName << std::endl;
+    char filePath[256];
+    buildFilePath(filePath,fileName);
     readFileBytes(clientSocket, filePath, fileSize);
     close(clientSocket);
-    printf("child thread %i with pid %i finished.\n", pthread_self(),
-           getpid());
     return nullptr;
 }
 

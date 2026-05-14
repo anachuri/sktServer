@@ -15,7 +15,8 @@ uintmax_t getFileSize(const char* filename) {
 }
 
 int main() {
-    char fileName[] = "zoom_amd64.deb";
+    //char fileName[] = "zoom_amd64.deb";
+    char fileName[] = "image.png";
     std::cout << "client started" << std::endl;
     // creating socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -33,19 +34,22 @@ int main() {
     std::cout << filePath << std::endl;
     uintmax_t fileSize = getFileSize(filePath);
     std::cout << fileSize << std::endl;
-    send(clientSocket, &fileSize, sizeof(uintmax_t), 0);
-    send(clientSocket, fileName, sizeof(fileName), 0);
-    std::cout << sizeof(fileName) << std::endl;
+//    send(clientSocket, &fileSize, sizeof(uintmax_t), 0);
+ //   send(clientSocket, fileName, sizeof(fileName), 0);
+
     if (FILE *fp = fopen(filePath, "rb")) {
         size_t readBytes;
         char buffer[8192];
+        int s = 0;
         while ((readBytes = fread(buffer, 1, sizeof(buffer), fp)) > 0) {
             if (send(clientSocket, buffer, readBytes, 0) != readBytes) {
                 perror("");
                 //handleErrors();
                 break;
             }
+            s+=readBytes;
         }
+        std::cout<<"bytes enviados: "<<s<<std::endl;
         fclose(fp);
         // closing socket
         close(clientSocket);
