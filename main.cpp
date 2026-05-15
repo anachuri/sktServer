@@ -39,9 +39,26 @@ void readFileBytes(int clientSocket, const char filePath[256], uintmax_t fileSiz
     }
     if (fileSize > 0) {
         std::cout << "error al recibir el archivo,archivo incompleto" << std::endl;
-        close(clientSocket);
     } else
         std::cout << "File transfer complete." << std::endl;
+}
+
+void sendFileBytes(int clientSocket, const char filePath[256]) {
+    if (FILE *fp = fopen(filePath, "rb")) {
+        size_t readBytes;
+        char buffer[8192];
+        int s = 0;
+        while ((readBytes = fread(buffer, 1, sizeof(buffer), fp)) > 0) {
+            if (send(clientSocket, buffer, readBytes, 0) != readBytes) {
+                perror("");
+                //handleErrors();
+                break;
+            }
+            s+=readBytes;
+        }
+        std::cout<<"bytes enviados: "<<s<<std::endl;
+        fclose(fp);
+    }
 }
 
 void buildFileDir() {
@@ -55,7 +72,7 @@ void buildFileDir() {
         error("error al crear");
 }
 
-void handleRequest(int clientSocket){
+void receiveFile(int clientSocket){
     FileInfo fileInfo;
     if (recv(clientSocket, &fileInfo, sizeof(fileInfo), 0) < 0)
         error("cannot read file info");
@@ -63,19 +80,26 @@ void handleRequest(int clientSocket){
     readFileBytes(clientSocket, fileDir, fileInfo.fileSize);
 }
 
+void sendFile(int clientSocket){
+    char fileName[50],filePath[50];
+    if (recv(clientSocket, fileName, sizeof(fileName), 0) < 0)
+        error("cannot read file name");
+    strncpy(filePath, fileDir, strlen(fileDir));
+    strncat(filePath,fileName,strlen(fileName));
+    sendFileBytes(clientSocket,filePath);
+}
+
 void *thread_proc(void *arg) {
     int clientSocket = *((int *) (&arg));
     char op;
     if (recv(clientSocket, &op, sizeof(op), 0) < 0)
         error("cannot read option");
-    switch (op) {
-    case '1':
-        handleRequest(clientSocket);
-        break;
-    default:
+    if(op == '1')
+        receiveFile(clientSocket);
+    else if(op == '2')
+        sendFile(clientSocket);
+    else
         std::cout<<"opcion invalida"<<std::endl;
-        break;
-    }
     close(clientSocket);
     return nullptr;
 }

@@ -7,8 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(sktServer main.cpp
     fileinfo.h)
-add_executable(client client.cpp)
-add_executable(basicClient basicClient.cpp)
+add_executable(senderClient senderclient.cpp)
+add_executable(receiverCLient receiverclient.cpp)
 
 include(GNUInstallDirs)
 install(TARGETS sktServer
