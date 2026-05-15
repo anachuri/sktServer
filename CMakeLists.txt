@@ -5,7 +5,8 @@ project(sktServer LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(sktServer main.cpp)
+add_executable(sktServer main.cpp
+    fileinfo.h)
 add_executable(client client.cpp)
 add_executable(basicClient basicClient.cpp)
 

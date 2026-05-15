@@ -1,3 +1,4 @@
+#include "fileinfo.h"
 #include <cstring>
 #include <iostream>
 #include <netinet/in.h>
@@ -34,8 +35,12 @@ int main() {
     std::cout << filePath << std::endl;
     uintmax_t fileSize = getFileSize(filePath);
     std::cout << fileSize << std::endl;
-//    send(clientSocket, &fileSize, sizeof(uintmax_t), 0);
- //   send(clientSocket, fileName, sizeof(fileName), 0);
+    FileInfo fileInfo;
+    fileInfo.fileSize = fileSize;
+    strcpy(fileInfo.fileName, fileName);
+    send(clientSocket, &fileInfo, sizeof(fileInfo), 0);
+    //    send(clientSocket, &fileSize, sizeof(uintmax_t), 0);
+    //   send(clientSocket, fileName, sizeof(fileName), 0);
 
     if (FILE *fp = fopen(filePath, "rb")) {
         size_t readBytes;

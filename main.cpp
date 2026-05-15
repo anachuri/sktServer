@@ -1,6 +1,7 @@
-#include <fstream>
+#include "fileinfo.h"
 #include <iostream>
 #include <netinet/in.h>
+#include <pthread.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +10,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <pthread.h>
 
 void error(const char *msg) {
     perror(msg);
@@ -58,17 +58,12 @@ void buildFilePath(char *filePath, const char fileName[]) {
 
 void *thread_proc(void *arg){
     int clientSocket = *((int*)(&arg));
-    uintmax_t fileSize;
-    //if (recv(clientSocket, &fileSize, sizeof(uintmax_t), 0) < 0)
-    //    error("cannot read file size");
-    //std::cout << fileSize << std::endl;
-    char fileName[256];
-    //if (recv(clientSocket, &fileName, sizeof(fileName), 0) < 0)
-    //    error("cannot read file name");
-    //std::cout << fileName << std::endl;
+    FileInfo fileInfo;
+    if (recv(clientSocket, &fileInfo, sizeof(fileInfo), 0) < 0)
+        error("cannot read file size");
     char filePath[256];
-    buildFilePath(filePath,fileName);
-    readFileBytes(clientSocket, filePath, fileSize);
+    buildFilePath(filePath, fileInfo.fileName);
+    readFileBytes(clientSocket, filePath, fileInfo.fileSize);
     close(clientSocket);
     return nullptr;
 }
