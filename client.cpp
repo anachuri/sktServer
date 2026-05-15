@@ -40,6 +40,8 @@ int main() {
     FileInfo fileInfo;
     fileInfo.fileSize = fileSize;
     strcpy(fileInfo.fileName, fileName);
+    char op = '1';
+    send(clientSocket,&op,sizeof(char),0);
     send(clientSocket, &fileInfo, sizeof(fileInfo), 0);
     //    send(clientSocket, &fileSize, sizeof(uintmax_t), 0);
     //   send(clientSocket, fileName, sizeof(fileName), 0);

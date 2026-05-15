@@ -22,7 +22,7 @@ void readFileBytes(int clientSocket, const char filePath[256], uintmax_t fileSiz
     if (FILE *fp = fopen(filePath, "wb")) {
         size_t readBytes;
         char buffer[8192];
-        std::cout << fileSize << std::endl;
+        std::cout <<"fileSize: "<< fileSize << std::endl;
         int s = 0;
         while ((readBytes = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0) {
             if (fwrite(buffer, 1, readBytes, fp) != readBytes) {
@@ -55,13 +55,27 @@ void buildFileDir() {
         error("error al crear");
 }
 
-void *thread_proc(void *arg) {
-    int clientSocket = *((int *) (&arg));
+void handleRequest(int clientSocket){
     FileInfo fileInfo;
     if (recv(clientSocket, &fileInfo, sizeof(fileInfo), 0) < 0)
         error("cannot read file info");
     strncat(fileDir, fileInfo.fileName, strlen(fileInfo.fileName));
     readFileBytes(clientSocket, fileDir, fileInfo.fileSize);
+}
+
+void *thread_proc(void *arg) {
+    int clientSocket = *((int *) (&arg));
+    char op;
+    if (recv(clientSocket, &op, sizeof(op), 0) < 0)
+        error("cannot read option");
+    switch (op) {
+    case '1':
+        handleRequest(clientSocket);
+        break;
+    default:
+        std::cout<<"opcion invalida"<<std::endl;
+        break;
+    }
     close(clientSocket);
     return nullptr;
 }
