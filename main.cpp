@@ -11,6 +11,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+char fileDir[256];
+
 void error(const char *msg) {
     perror(msg);
     exit(1);
@@ -42,34 +44,31 @@ void readFileBytes(int clientSocket, const char filePath[256], uintmax_t fileSiz
         std::cout << "File transfer complete." << std::endl;
 }
 
-void buildFilePath(char *filePath, const char fileName[]) {
+void buildFileDir() {
     struct passwd *pw = getpwuid(getuid());
-    strncpy(filePath, pw->pw_dir, strlen(pw->pw_dir));
-    //filePath[strlen(pw->pw_dir)] = '\0';
-    strncat(filePath, "/sktFiles/", strlen("/sktFiles/"));
-    std::cout << "filePath: " << filePath << std::endl;
+    strncpy(fileDir, pw->pw_dir, strlen(pw->pw_dir));
+    strncat(fileDir, "/sktFiles/", strlen("/sktFiles/"));
+    std::cout << "fileDir: " << fileDir << std::endl;
     struct stat st = {0};
-    mkdir(filePath, 0777);
-    if (stat(filePath, &st) == -1)
+    mkdir(fileDir, 0777);
+    if (stat(fileDir, &st) == -1)
         error("error al crear");
-    strncat(filePath, fileName, strlen(fileName));
-    std::cout << "filePath: " << filePath << std::endl;
 }
 
 void *thread_proc(void *arg) {
     int clientSocket = *((int *) (&arg));
     FileInfo fileInfo;
     if (recv(clientSocket, &fileInfo, sizeof(fileInfo), 0) < 0)
-        error("cannot read file size");
-    char filePath[256];
-    buildFilePath(filePath, fileInfo.fileName);
-    readFileBytes(clientSocket, filePath, fileInfo.fileSize);
+        error("cannot read file info");
+    strncat(fileDir, fileInfo.fileName, strlen(fileInfo.fileName));
+    readFileBytes(clientSocket, fileDir, fileInfo.fileSize);
     close(clientSocket);
     return nullptr;
 }
 
 int main() {
     std::cout << "server started" << std::endl;
+    buildFileDir();
     int serverSocket;
     struct sockaddr_in serv_addr, cli_addr;
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);

@@ -17,8 +17,8 @@ uintmax_t getFileSize(const char* filename) {
 
 int main() {
     //char fileName[] = "zoom_amd64.deb";
-    //char fileName[] = "image.png";
-    char fileName[] = "mdiscretas.pdf";
+    char fileName[] = "image.png";
+    //char fileName[] = "mdiscretas.pdf";
 
     std::cout << "client started" << std::endl;
     // creating socket
