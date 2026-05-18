@@ -13,19 +13,304 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">
+ /*==========================
+   BASE
+   ========================== */
+QMainWindow {
+  /* background-color: #121212;*/
+    color: #E0E0E0;
+    font-family: &quot;Roboto&quot;, &quot;Segoe UI&quot;, sans-serif;
+    font-size: 13px;
+}
+
+QWidget {
+    background-color: #121212;
+    color: #E0E0E0;
+}
+
+/* ==========================
+   MENU BAR
+   ========================== */
+QMenuBar {
+    background-color: #1E1E1E;
+    padding: 4px;
+}
+
+QMenuBar::item {
+    background: transparent;
+    padding: 6px 12px;
+}
+
+QMenuBar::item:selected {
+    background-color: #2C2C2C; /*cambiar color*/
+    border-radius: 4px;
+}
+
+QMenu {
+    background-color: #1E1E1E;
+    border: 1px solid #333;
+}
+
+QMenu::item {
+	padding-left:5px;
+    padding: 8px
+}
+QMenu::item:selected {
+    background-color: #6d7b47;
+    color: white;
+}
+
+/* ==========================
+   TOOLBAR
+   ========================== */
+QToolBar {
+    background-color: #1E1E1E;
+    border: none;
+    spacing: 6px;
+    padding: 6px;
+}
+
+QToolButton {
+    background-color: transparent;
+    border-radius: 8px;
+    padding: 6px;
+}
+
+QToolButton:hover {
+    background-color: #2C2C2C;
+}
+
+QToolButton:pressed {
+    background-color: #6d7b47;
+}
+
+/* ==========================
+   SPLITTER
+   ========================== */
+QSplitter::handle {
+    
+}
+
+QSplitter::handle:horizontal {
+    width: 6px;
+}
+
+QSplitter::handle:vertical {
+    height: 6px;
+}
+
+/*QSplitter::handle:hover {
+    background-color: #6d7b47;
+}*/
+
+/* ==========================
+   TREE WIDGET (Databases)
+   ========================== */
+QTreeWidget {
+    background-color: #1E1E1E;
+    selection-background-color: transparent;
+   /* selection-color: #E0E0E0;*/
+    outline: 0;
+}
+
+QTreeWidget::item {
+    padding: 6px;
+    border-radius: 6px;
+}
+
+/* Selección */
+QTreeWidget::item:selected,
+QTreeWidget::item:!active:selected {
+    background: transparent;
+    /*color: #E0E0E0;*/
+}
+
+/* Hover */
+QTreeWidget::item:hover {
+    background: transparent;
+}
+
+/* Expandido */
+QTreeWidget::item:has-children:open {
+    background: transparent;
+}
+
+/* Rama (MUY IMPORTANTE) 
+QTreeWidget::branch:selected,
+QTreeWidget::branch:!active:selected {
+    background: transparent;
+}*/
+
+QHeaderView::section {
+    background-color: #1E1E1E;
+    border: none;
+    padding: 6px;
+    font-weight: bold;
+}
+/* ==========================
+   TAB WIDGET
+   ========================== */
+QTabWidget::pane {
+    
+    background-color: #121212;
+}
+
+QTabBar::tab {
+    background-color: #1E1E1E;
+    padding: 8px 14px;
+    margin-right: 2px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+QTabBar::tab:selected {
+    background-color: #6d7b47;
+    color: white;
+}
+
+QTabBar::tab:hover {
+    background-color: #2C2C2C;
+}
+
+/* ==========================
+   TABLE VIEW
+   ========================== */
+QTableView {
+    background-color: #1E1E1E;
+    
+    gridline-color: red;
+    selection-background-color: red;
+}
+
+QTableView::item {
+    padding: 6px;
+}
+
+QTableView::item:selected {
+    background-color: #6d7b47;
+}
+
+/* ==========================
+   LIST WIDGET
+   ========================== */
+QListWidget {
+    background-color: #1E1E1E;
+   
+}
+
+QListWidget::item {
+    padding: 8px;
+    border-radius: 6px;
+}
+
+QListWidget::item:selected {
+    background-color: #6d7b47;
+}
+
+QListWidget::item:hover {
+    background-color: #2C2C2C;
+}
+
+/* ==========================
+   LABEL (tableInfo)
+   ========================== */
+QLabel {
+    background-color: #1E1E1E;
+    border-radius: 6px;
+    padding: 6px;
+    color: #B0B0B0;
+}
+
+/* ==========================
+   SCROLLBAR VERTICAL
+   ========================== */
+QScrollBar:vertical {
+    background: #121212;
+    width: 10px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background: #2C2C2C;
+    border-radius: 5px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #6d7b47;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+    background: transparent;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: transparent;
+}
+
+/* ==========================
+   SCROLLBAR HORIZONTAL
+   ========================== */
+QScrollBar:horizontal {
+    background: #121212;
+    height: 10px;   /* 👈 CLAVE */
+    margin: 0;
+}
+
+QScrollBar::handle:horizontal {
+    background: #2C2C2C;
+    border-radius: 5px;
+    min-width: 20px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #6d7b47;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0;
+    background: transparent;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: transparent;
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>22</height>
-    </rect>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
    </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionSend_file"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSend_file">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/img/send-file.png</normaloff>:/img/send-file.png</iconset>
+   </property>
+   <property name="text">
+    <string>Send file</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="img.qrc"/>
+ </resources>
  <connections/>
 </ui>

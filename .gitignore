@@ -82,7 +82,7 @@ CMakeLists.txt.user*
 /build*/
 *.out
 *.jpeg
-*.png
+received.png
 *.webp
 *.jpg
 *.pdf
