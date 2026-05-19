@@ -38,3 +38,11 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index) {
     QString path = dirModel->fileInfo(index).absoluteFilePath();
     ui->listView->setRootIndex(fileModel->setRootPath(path));
 }
+
+void MainWindow::on_actionReceived_files_triggered() {
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::on_actionFile_explorer_triggered() {
+    ui->stackedWidget->setCurrentIndex(0);
+}

@@ -20,6 +20,10 @@ public:
 private slots:
     void on_treeView_clicked(const QModelIndex &index);
 
+    void on_actionReceived_files_triggered();
+
+    void on_actionFile_explorer_triggered();
+
 private:
     Ui::MainWindow *ui;
     QFileSystemModel *dirModel;
