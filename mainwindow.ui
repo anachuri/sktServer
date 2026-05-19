@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
+    <width>741</width>
     <height>382</height>
    </rect>
   </property>
@@ -283,7 +283,16 @@ QScrollBar::sub-page:horizontal {
     background: transparent;
 }</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="1">
+     <widget class="QTreeView" name="treeView"/>
+    </item>
+    <item row="0" column="2">
+     <widget class="QListView" name="listView"/>
+    </item>
+   </layout>
+  </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>toolBar</string>
@@ -297,15 +306,28 @@ QScrollBar::sub-page:horizontal {
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionFind_devices"/>
+   <addaction name="actionFile_explorer"/>
+   <addaction name="actionReceived_files"/>
   </widget>
-  <action name="actionFind_devices">
+  <action name="actionFile_explorer">
    <property name="icon">
     <iconset resource="img.qrc">
-     <normaloff>:/img/iot.png</normaloff>:/img/iot.png</iconset>
+     <normaloff>:/img/file-explorer.png</normaloff>:/img/file-explorer.png</iconset>
    </property>
    <property name="text">
-    <string>Find devices</string>
+    <string>File explorer</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionReceived_files">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/img/receive-file.png</normaloff>:/img/receive-file.png</iconset>
+   </property>
+   <property name="text">
+    <string>Received files</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

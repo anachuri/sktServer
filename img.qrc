@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>img/send-file.png</file>
         <file>img/iot.png</file>
+        <file>img/receive-file.png</file>
+        <file>img/file-explorer.png</file>
     </qresource>
 </RCC>
