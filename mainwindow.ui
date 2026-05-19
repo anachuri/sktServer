@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>552</width>
+    <height>382</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -288,21 +288,24 @@ QScrollBar::sub-page:horizontal {
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
    <attribute name="toolBarArea">
     <enum>LeftToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionSend_file"/>
+   <addaction name="actionFind_devices"/>
   </widget>
-  <action name="actionSend_file">
+  <action name="actionFind_devices">
    <property name="icon">
     <iconset resource="img.qrc">
-     <normaloff>:/img/send-file.png</normaloff>:/img/send-file.png</iconset>
+     <normaloff>:/img/iot.png</normaloff>:/img/iot.png</iconset>
    </property>
    <property name="text">
-    <string>Send file</string>
+    <string>Find devices</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
